@@ -12,7 +12,7 @@ class ChaosUITests: XCTestCase {
 
     let minimumGestureFrequency: UInt32 = 1 // Minimum amount of time to pass between gestures in seconds
     let duration: Double = 60 * 3 // Execution time limit in seconds
-    let gestureLimit = 100 // Number of gestures to be executed
+    let gestureLimit: UInt = 100 // Number of gestures to be executed
     let gestureTypeCount: UInt32 = 14 // Number of types of gesture available
     let app = XCUIApplication()
         
