@@ -45,52 +45,91 @@ class ChaosUITests: XCTestCase {
         }
     }
 
-    private func executeRandomGesture() {
-        let randomGestureID = arc4random_uniform(gestureTypeCount)
-        let elementCount = UInt32(app.windows.descendantsMatchingType(.Any).count)
-        if elementCount > 0 {
-            let randomNumber = arc4random_uniform(elementCount)
-            let element = app.windows.descendantsMatchingType(.Any).elementBoundByIndex(UInt(randomNumber))
-            let device = XCUIDevice()
-            if element.hittable {
-                switch randomGestureID {
-                case 0:
-                    element.tap()
-                case 1:
-                    element.doubleTap()
-                case 2:
-                    element.swipeUp()
-                case 3:
-                    element.swipeDown()
-                case 4:
-                    element.swipeLeft()
-                case 5:
-                    element.swipeRight()
-                case 6:
-                    device.orientation = .Portrait
-                case 7:
-                    device.orientation = .PortraitUpsideDown
-                case 8:
-                    device.orientation = .LandscapeLeft
-                case 9:
-                    device.orientation = .LandscapeRight
-                case 10:
-                    device.orientation = .FaceUp
-                case 11:
-                    device.orientation = .FaceDown
-                case 12:
-                    element.twoFingerTap()
-                case 13:
-                    element.pressForDuration(2)
-                default:
-                    XCTFail("Random number failure - unhandled case for number: \(randomGestureID) on element type: \(element.elementType)")
-                }
-                print("Executed gesture \(randomGestureID) on element")
-            }
-        } else {
-            print("Failed to execute gesture")
-        }
-        // Wait for cooldown period
-        sleep(minimumGestureFrequency)
-    }
+	private func executeRandomGesture() {
+		let randomGestureID = arc4random_uniform(gestureTypeCount)
+		let coordinate = getRandomCoordinate()
+		let device = XCUIDevice.sharedDevice()
+		switch randomGestureID {
+		case 0:
+			coordinate.tap()
+		case 1:
+			coordinate.doubleTap()
+		case 2:
+			// Scroll up
+			let maxY = app.windows.elementBoundByIndex(0).frame.size
+			let startY = coordinate.screenPoint.y
+			let dy = (startY * getRandomValueBetween0And1()) / maxY.height
+			let vector = CGVector(dx: coordinate.screenPoint.x / maxY.width, dy: dy)
+			scroll(coordinate, toCoordinate: getCoordinateForVector(vector))
+		case 3:
+			// Scroll down
+			let maxY = app.windows.elementBoundByIndex(0).frame.size
+			let startY = coordinate.screenPoint.y
+			let dy = ((maxY.height - startY) * getRandomValueBetween0And1() + startY) / maxY.height
+			let vector = CGVector(dx: coordinate.screenPoint.x / maxY.width, dy: dy)
+			scroll(coordinate, toCoordinate: getCoordinateForVector(vector))
+		case 4:
+			// Scroll left
+			let maxX = app.windows.elementBoundByIndex(0).frame.size
+			let startX = coordinate.screenPoint.x
+			let dx = (startX * getRandomValueBetween0And1()) / maxX.width
+			let vector = CGVector(dx: dx, dy: coordinate.screenPoint.y / maxX.height)
+			scroll(coordinate, toCoordinate: getCoordinateForVector(vector))
+		case 5:
+			// Scroll right
+			let maxX = app.windows.elementBoundByIndex(0).frame.size
+			let startX = coordinate.screenPoint.x
+			let dx = ((maxX.width - startX) * getRandomValueBetween0And1() + startX) / maxX.width
+			let vector = CGVector(dx: dx, dy: coordinate.screenPoint.y / maxX.height)
+			scroll(coordinate, toCoordinate: getCoordinateForVector(vector))
+		case 6:
+			device.orientation = .Portrait
+		case 7:
+			device.orientation = .PortraitUpsideDown
+		case 8:
+			device.orientation = .LandscapeLeft
+		case 9:
+			device.orientation = .LandscapeRight
+		case 10:
+			device.orientation = .FaceUp
+		case 11:
+			device.orientation = .FaceDown
+		case 12:
+			// Move in a completely random direction
+			scroll(coordinate, toCoordinate: getRandomCoordinate())
+		case 13:
+			coordinate.pressForDuration(2)
+		default:
+			XCTFail("Random number failure - unhandled case for number: \(randomGestureID)")
+		}
+		print("Executed gesture \(randomGestureID) on coordinate: \(coordinate)")
+
+		// Wait for cooldown period
+		sleep(minimumGestureFrequency)
+	}
+
+	private func getRandomCoordinate() -> XCUICoordinate {
+		let randomX = getRandomValueBetween0And1()
+		let randomY = getRandomValueBetween0And1()
+
+		let randomVector = CGVector(dx: randomX, dy: randomY)
+		let coordinate = getCoordinateForVector(randomVector)
+
+		return coordinate
+	}
+
+	private func getCoordinateForVector(vector: CGVector) -> XCUICoordinate {
+		let window = app.windows.elementBoundByIndex(0)
+		let coordinate = window.coordinateWithNormalizedOffset(vector)
+		return coordinate
+	}
+
+	private func getRandomValueBetween0And1() -> CGFloat {
+		return CGFloat(Float(arc4random()) / Float(UINT32_MAX))
+	}
+
+	private func scroll(fromCoordinate: XCUICoordinate, toCoordinate: XCUICoordinate) {
+		fromCoordinate.pressForDuration(0, thenDragToCoordinate: toCoordinate)
+	}
+
 }
