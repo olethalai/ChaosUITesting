@@ -56,31 +56,31 @@ class ChaosUITests: XCTestCase {
 			coordinate.doubleTap()
 		case 2:
 			// Scroll up
-			let maxY = app.windows.elementBoundByIndex(0).frame.size
+			let maxSize = app.windows.elementBoundByIndex(0).frame.size
 			let startY = coordinate.screenPoint.y
-			let dy = (startY * getRandomValueBetween0And1()) / maxY.height
-			let vector = CGVector(dx: coordinate.screenPoint.x / maxY.width, dy: dy)
+			let dy = (startY * getRandomValueBetween0And1()) / maxSize.height
+			let vector = CGVector(dx: coordinate.screenPoint.x / maxSize.width, dy: dy)
 			scroll(coordinate, toCoordinate: getCoordinateForVector(vector))
 		case 3:
 			// Scroll down
-			let maxY = app.windows.elementBoundByIndex(0).frame.size
+			let maxSize = app.windows.elementBoundByIndex(0).frame.size
 			let startY = coordinate.screenPoint.y
-			let dy = ((maxY.height - startY) * getRandomValueBetween0And1() + startY) / maxY.height
-			let vector = CGVector(dx: coordinate.screenPoint.x / maxY.width, dy: dy)
+			let dy = ((maxSize.height - startY) * getRandomValueBetween0And1() + startY) / maxSize.height
+			let vector = CGVector(dx: coordinate.screenPoint.x / maxSize.width, dy: dy)
 			scroll(coordinate, toCoordinate: getCoordinateForVector(vector))
 		case 4:
 			// Scroll left
-			let maxX = app.windows.elementBoundByIndex(0).frame.size
+			let maxSize = app.windows.elementBoundByIndex(0).frame.size
 			let startX = coordinate.screenPoint.x
-			let dx = (startX * getRandomValueBetween0And1()) / maxX.width
-			let vector = CGVector(dx: dx, dy: coordinate.screenPoint.y / maxX.height)
+			let dx = (startX * getRandomValueBetween0And1()) / maxSize.width
+			let vector = CGVector(dx: dx, dy: coordinate.screenPoint.y / maxSize.height)
 			scroll(coordinate, toCoordinate: getCoordinateForVector(vector))
 		case 5:
 			// Scroll right
-			let maxX = app.windows.elementBoundByIndex(0).frame.size
+			let maxSize = app.windows.elementBoundByIndex(0).frame.size
 			let startX = coordinate.screenPoint.x
-			let dx = ((maxX.width - startX) * getRandomValueBetween0And1() + startX) / maxX.width
-			let vector = CGVector(dx: dx, dy: coordinate.screenPoint.y / maxX.height)
+			let dx = ((maxSize.width - startX) * getRandomValueBetween0And1() + startX) / maxSize.width
+			let vector = CGVector(dx: dx, dy: coordinate.screenPoint.y / maxSize.height)
 			scroll(coordinate, toCoordinate: getCoordinateForVector(vector))
 		case 6:
 			device.orientation = .Portrait
