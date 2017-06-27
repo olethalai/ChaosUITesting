@@ -9,13 +9,13 @@
 import XCTest
 
 class ChaosUITests: XCTestCase {
-    
+
     let minimumGestureFrequency: UInt32 = 1 // Minimum amount of time to pass between gestures in seconds
     let duration: Double = 10 // Execution time limit in seconds
     let gestureLimit: UInt = 10 // Number of gestures to be executed
     let gestureTypeCount: UInt32 = 14 // Number of types of gesture available
     let app = XCUIApplication()
-    
+
     override func setUp() {
         super.setUp()
         // In these chaos tests, why not continue after failure, if nothing's crashed? CHAOS!
@@ -23,12 +23,12 @@ class ChaosUITests: XCTestCase {
         // UI tests must launch the application that they test. Doing this in setup will make sure it happens for each test method.
         app.launch()
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
-    
+
     func testChaosHandlingForDuration() {
         // Create a loop for the given time limit
         let end = NSDate(timeIntervalSinceNow: duration)
@@ -37,14 +37,14 @@ class ChaosUITests: XCTestCase {
             executeRandomGesture()
         }
     }
-    
+
     func testChaosHandlingUntilGestureLimit() {
         // Loop for as many times as the gesture limit allows
         for _ in 0..<gestureLimit {
             executeRandomGesture()
         }
     }
-    
+
     private func executeRandomGesture() {
         let randomGestureID = arc4random_uniform(gestureTypeCount)
         let coordinate = getRandomCoordinate()
@@ -107,7 +107,7 @@ class ChaosUITests: XCTestCase {
         // Wait for cooldown period
         sleep(minimumGestureFrequency)
     }
-    
+
     private func getRandomCoordinate() -> XCUICoordinate {
         let randomX = getRandomValueBetween0And1()
         let randomY = getRandomValueBetween0And1()
@@ -117,19 +117,19 @@ class ChaosUITests: XCTestCase {
         
         return coordinate
     }
-    
+
     private func getCoordinateForVector(vector: CGVector) -> XCUICoordinate {
         let window = app.windows.element(boundBy: 0)
         let coordinate = window.coordinate(withNormalizedOffset: vector)
         return coordinate
     }
-    
+
     private func getRandomValueBetween0And1() -> CGFloat {
         return CGFloat(Float(arc4random()) / Float(UINT32_MAX))
     }
-    
+
     private func scroll(fromCoordinate: XCUICoordinate, toCoordinate: XCUICoordinate) {
         fromCoordinate.press(forDuration: 0, thenDragTo: toCoordinate)
     }
-    
+
 }
