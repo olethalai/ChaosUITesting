@@ -2,7 +2,7 @@
 
 You will need:
 
-* Xcode >7.2
+* Xcode >8.3
 * iOS >9.0 simulator
 * A working iOS app project
 
